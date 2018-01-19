@@ -52,6 +52,7 @@ So in this example, we start off with the following premise:
 23. in Contenful you create a "Content" Page called "Home" with the slig `index` and file of `index`
 3. You have an API token and the space ID.
 4. You have some MongoDB server working (we will dockerize all this later)
+5. You are using NodeJS 7+
 
 So let's start with the `config.json` file
 
@@ -111,14 +112,17 @@ async function main(){
         noCache: isDev
     });
 
+    // This is if you want a special route to handle a form submission for example
     app.get('/somethingspecial', (req, res) => {
         return JSON.stringify({"somethingCoolHappened":"Yup"});
     });
 
+    // Otherwise we catch all requests here
     app.get('*', async function(req, res) {
+        // Make sure we have the latest content (in most cases it just returns a cached variable).
         var content = await notaCMS.getContent();
 
-        // Check if we need an initial sync
+        // Check if we need an initial sync (if this is your first time running and ther eare no pages)
         if(content.pages){
             await notaCMS.sync();
             content = await notaCMS.getContent();
@@ -127,19 +131,24 @@ async function main(){
 
         var pages = content.page;
         var url = req.url;
+        
+        // If nothing is selected, we hit a 404
         var selectedPage = {
             "file":"404"
         }
 
+        // If no page is selected, we assume they want the index
         if(url=="/") url="/index";
 
+        // Loop through the pages to find the right URL
         pages.forEach((page)=>{
             if(page.slug == url.substring(1)){
                 selectedPage = page;
                 return true;
             }
-        })
+        });
 
+        // Render the page, and add content and page to the view for usage
         return res.render(selectedPage.file, {
             content: notaCMS.getContent(),
             page: selectedPage
@@ -149,6 +158,7 @@ async function main(){
 
     });
 
+    // Listen on port 8000
     app.listen(8000);
 
     console.log("Application listening on port 8000");
