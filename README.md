@@ -41,6 +41,18 @@ So the solution is simple:
 3. Serve all content based on that cache
 4. When changes are made, via a webhook, re-trigger #1.
 
+## Supported Services
+
+**Cache Sources**
+
+* MongoDB
+
+**Content Services**
+
+* Contentful
+
+There are some great other options out there, I just started with these two because I like them, but feel free to pull in a request for another option!
+
 ## Shut up and Code
 
 Ok, cool.  I like code examples too.  So lets take an example (also shown in the examples folder).
