@@ -1,0 +1,35 @@
+{
+  "name": "contentful-cache",
+  "version": "0.5.5",
+  "description": "A module that will sync your contentful data with a local datasource giving you more powerful query tools, faster responses, and cheaper usage :)",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AddoSolutions/contentful-cache.git"
+  },
+  "keywords": [
+    "contentful",
+    "caas",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "Nick Artman <nick@addosolutions.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AddoSolutions/contentful-cache/issues"
+  },
+  "homepage": "https://github.com/AddoSolutions/contentful-cache#readme",
+  "dependencies": {
+    "contentful": "^5.0.5",
+    "express": "^4.16.2",
+    "mongodb": "^2.2.33"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "expect": "^22.1.0",
+    "mocha": "^5.0.0"
+  }
+}
