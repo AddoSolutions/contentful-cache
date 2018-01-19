@@ -171,4 +171,4 @@ That may seem like a lot, but read it, it's really quite simple.
 
 Then you create a `static` folder, a `template` folder, and name your tempaltes according to the file ID you define in Contentful.  In this case, define `index.html` and go to town.
 
-You can check out [full example here](/AddoSolutions/notacms/tree/master/example)
+You can check out [full example here](/example)
