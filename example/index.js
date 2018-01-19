@@ -37,7 +37,7 @@ async function main(){
     app.set('views', './templates');
 
     const njk = expressNunjucks(app, {
-        watch: isDev,``
+        watch: isDev,
         noCache: isDev
     });
 
