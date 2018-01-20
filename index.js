@@ -13,15 +13,21 @@ class Content {
                     "space": null,          // Enter the spaceID for the given contentful space (ex: l6venjzzzzzz)
                     "accessToken": null,    // The API access token
                     "logger": function (level, data) {
-                    }
-                },
+                    },
+                }
             },
             "cache": {
                 "method": "mongodb",    // What method would you like to use for your sync?
                 "options": {
-                    "connection": "mongodb://localhost:27017/contentful" // The mongoDB connection string
+                    "connection": "mongodb://localhost:27017/contentful", // The mongoDB connection string
                 }
             },
+            "beforeStorage": function (collection, data) {
+                return data
+            }, // Want to do something special to your data before storing your data?
+            "beforeContent": function (collection, data) {
+                return data
+            }, // Want to do something special to your data before returning "getContent" data? Perhaps modelify it?
             "updateListener": {
                 port: 33257,            // This will be the port that we listen on for updates from contentful
                 //host: "0.0.0.0",        // And the IP we bind to for that listener
@@ -29,10 +35,7 @@ class Content {
             },
             "syncAssets": true,          // Whether to sync the remtoe assets content as well (we are not syncing the actual file data)
             "whitelist": false,          // Collections you ONLY want (array of strings)
-            "blacklist": false,          // Collections you DO NOT want (array of strings)
-            "dataMassage": function (collection, data) {
-                return data
-            }, // Want to do something special to your data before storing?
+            "blacklist": false,          // Collections you DO NOT want (array of strings)Ω
             "noMemcache": false
 
         }
@@ -59,6 +62,9 @@ class Content {
             // Get the data we are planning to store
             var records = await source.getRecords();
 
+            // Allow user modification before storage
+            records = await this._objectMorph(records, this.options.beforeStorage);
+
             // And finally, store it :)
             await cache.store(records);
 
@@ -78,7 +84,7 @@ class Content {
     async getContent() {
 
         if (this.options.noMemcache) {
-            return (await this._getCache()).getAll({});
+            return await this._getContent({});
         }
 
         // If we already have the content in a stored memory, just return that
@@ -88,9 +94,18 @@ class Content {
         this.content.updated = true;
 
         // Now we get the data from the cache source
-        this.content = await (await this._getCache()).getAll(this.content);
+        return await this._getContent(this.content);
+    }
 
-        return this.getContent();
+    /**
+     * Actually get the content
+     * @returns {Promise.<void>}
+     * @private
+     */
+    async _getContent(content){
+        await (await this._getCache()).getAll(content);
+        await this._objectMorph(content, this.options.beforeContent);
+        return content;
     }
 
     /**
@@ -98,6 +113,33 @@ class Content {
      */
     bustCache() {
         if(this.content) this.content.updated = false;
+    }
+
+
+    /**
+     * Apply `f` to each infidivual record in the records object
+     * @param records
+     * @param f
+     * @private
+     */
+    async _objectMorph(records, f){
+        try {
+            for (var type in records) {
+                if(!Array.isArray(records[type])) continue;
+                records[type] = await Promise.all(records[type].map(async (obj) => {
+                    // Before we finally store this object, we want to let the user morph it to their desired extent
+                    try {
+                        return f(type, obj);
+                    } catch (e) {
+                        console.error(e);
+                        return undefined;
+                    }
+                }));
+            }
+        }catch(e){
+            console.error(e);
+        }
+        return records;
     }
 
 
@@ -127,6 +169,10 @@ class Content {
         return this._source;
     }
 
+    /**
+     * Start port listening for API call to refresh data
+     * @private
+     */
     _initListener() {
         var options = this.options.updateListener;
 

@@ -23,8 +23,17 @@ async function main(){
         "cache": {
             "method": "mongodb",    // What method would you like to use for your sync?
             "options": {
-                "connection": config.mongo // The mongoDB connection string
+                "connection": config.mongo, // The mongoDB connection string
             }
+        },
+        beforeStorage:(collection,obj)=>{
+            obj.a=1;
+            obj.c=collection;
+            return obj;
+        },
+        beforeContent:(collection,obj)=>{
+            obj.a++;
+            return obj;
         }
     });
 
