@@ -88,10 +88,10 @@ class Content {
         }
 
         // If we already have the content in a stored memory, just return that
-        if (this.content && this.content.updated) return this.content;
+        if (this.content && this.contentUpdated) return this.content;
 
         if (!this.content) this.content = {};
-        this.content.updated = true;
+        this.contentUpdated = true;
 
         // Now we get the data from the cache source
         return await this._getContent(this.content);
@@ -112,7 +112,7 @@ class Content {
      * If we need to invalidate the current cache, do it here
      */
     bustCache() {
-        if(this.content) this.content.updated = false;
+        if(this.content) this.contentUpdated = false;
     }
 
 
