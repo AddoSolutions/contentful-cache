@@ -6,6 +6,8 @@ Unlike other CMSes called "not a cms" this really isn't a CMS.  So what is it?
 
 Ok, everyone makes that claim.
 
+You can skip all this and see a [full example project](https://github.com/AddoSolutions/notacms-example) if you are into that kind of thing.
+
 ## I'm Tired of Wordpress… and the rest
 
 If you have not used wordpress, well you probably havent been in the web very long.  
@@ -56,6 +58,8 @@ There are some great other options out there, I just started with these two beca
 ## Shut up and Code
 
 Ok, cool.  I like code examples too.  So lets take an example (also shown in the examples folder).
+
+You can also check out a [full example project](https://github.com/AddoSolutions/notacms-example) that is ready to clone and run with.
 
 So in this example, we start off with the following premise:
 

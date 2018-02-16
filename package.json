@@ -1,6 +1,6 @@
 {
   "name": "notacms",
-  "version": "0.6.1",
+  "version": "0.6.1.1",
   "description": "A module that will sync your contentful data with a local datasource giving you more powerful query tools, faster responses, and cheaper usage :)",
   "main": "index.js",
   "scripts": {
