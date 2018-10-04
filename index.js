@@ -27,6 +27,9 @@ class Content {
             }, // Want to do something special to your data before storing your data?
             "beforeContent": function (collection, data) {
                 return data
+            }, // Want to do something special to your data before relating your data?
+            "beforeRelationshipMapping": function (collection, data) {
+                return data
             }, // Want to do something special to your data before returning "getContent" data? Perhaps modelify it?
             "updateListener": {
                 port: 33257,            // This will be the port that we listen on for updates from contentful
@@ -61,6 +64,11 @@ class Content {
 
             // Get the data we are planning to store
             var records = await source.getRecords();
+
+            records = await this._objectMorph(records, this.options.beforeRelationshipMapping);
+
+            // Connect all the dots
+            source.arrangeRelationships(records);
 
             // Allow user modification before storage
             records = await this._objectMorph(records, this.options.beforeStorage);
