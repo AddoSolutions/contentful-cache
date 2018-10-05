@@ -113,7 +113,7 @@ class Content {
     async _getContent(content){
         await (await this._getCache()).getAll(content);
         await this._objectMorph(content, this.options.beforeContent);
-        return content;
+        return (await this._getCache()).restrucureData(content);
     }
 
     /**
