@@ -39,7 +39,8 @@ class Content {
             "syncAssets": true,          // Whether to sync the remtoe assets content as well (we are not syncing the actual file data)
             "whitelist": false,          // Collections you ONLY want (array of strings)
             "blacklist": false,          // Collections you DO NOT want (array of strings)Ω
-            "noMemcache": false
+            "noMemcache": false,
+            "restructureData": true     // Whether to re-establish relations when loading from cache
 
         }
 
@@ -113,7 +114,12 @@ class Content {
     async _getContent(content){
         await (await this._getCache()).getAll(content);
         await this._objectMorph(content, this.options.beforeContent);
-        return (await this._getCache()).restrucureData(content);
+        if(this.options.restructureData){
+            return (await this._getCache()).restrucureData(content);
+        }else{
+            return content;
+        }
+
     }
 
     /**
